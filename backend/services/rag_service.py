@@ -1,9 +1,9 @@
 from rag.document_loader import load_pdf
 from rag.chunker import chunk_text
-from rag.embedding_generator import generate_embeddings
+from rag.embedding_service import generate_embeddings
 from rag.vector_store import store_documents
 from rag.retriever import retrieve_context
-from rag.generator import generate_answer
+from rag.llm_service import generate_answer
 
 
 def process_document(file_path: str):

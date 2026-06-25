@@ -1,5 +1,5 @@
 from .vector_store import get_collection
-from .embedding_generator import model
+from .embedding_service import model
 
 
 def retrieve_context(
