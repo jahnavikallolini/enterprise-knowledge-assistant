@@ -1,45 +1,16 @@
-from rag.document_loader import load_pdf
-from rag.chunker import chunk_text
-from rag.embedding_generator import (
-    generate_embeddings
-)
-from rag.vector_store import (
-    store_documents
-)
-from rag.retriever import (
-    retrieve_context
-)
-from rag.generator import (
-    generate_answer
+from services.rag_service import (
+    process_document,
+    ask_question
 )
 
-text = load_pdf(
-    "uploads/sample.pdf"
-)
+process_document("uploads/sample.pdf")
 
-chunks = chunk_text(text)
+question = input("Ask a question: ")
 
-embeddings = generate_embeddings(
-    chunks
-)
+response = ask_question(question)
 
-store_documents(
-    chunks,
-    embeddings
-)
+print("\nQUESTION:")
+print(response["question"])
 
-question = input(
-    "Ask a question: "
-)
-
-context = retrieve_context(
-    question
-)
-
-answer = generate_answer(
-    question,
-    context
-)
-
-print("\nANSWER:\n")
-print(answer)
+print("\nANSWER:")
+print(response["answer"])

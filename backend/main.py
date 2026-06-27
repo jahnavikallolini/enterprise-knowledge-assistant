@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from routes.chat import router as chat_router
 from routes.upload import router as upload_router
@@ -12,13 +13,20 @@ app = FastAPI(
     version="1.0.0"
 )
 
-
-@app.get(
-    "/",
-    tags=["Home"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
-def home():
 
+
+@app.get("/", tags=["Home"])
+def home():
     return {
         "message": "Enterprise Knowledge Assistant API"
     }
@@ -30,10 +38,7 @@ def home():
     tags=["Health"]
 )
 def health():
-
-    return HealthResponse(
-        status="healthy"
-    )
+    return HealthResponse(status="healthy")
 
 
 app.include_router(upload_router)
