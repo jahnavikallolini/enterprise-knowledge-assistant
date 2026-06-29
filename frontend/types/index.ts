@@ -1,0 +1,12 @@
+export interface Document {
+  filename: string;
+}
+
+export interface ChatRequest {
+  question: string;
+}
+
+export interface ChatResponse {
+  answer: string;
+  context: string[];
+}
