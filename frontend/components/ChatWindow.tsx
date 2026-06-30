@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import ChatInput from "./ChatInput";
 import MessageBubble from "./MessageBubble";
@@ -16,13 +16,29 @@ export default function ChatWindow() {
     },
   ]);
 
+  const [loading, setLoading] = useState(false);
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  }, [messages]);
+
   const sendMessage = async (question: string) => {
-    // Show the user's message immediately
+    setLoading(true);
+
     setMessages((prev) => [
       ...prev,
       {
         role: "user",
         message: question,
+      },
+      {
+        role: "assistant",
+        message: "Thinking...",
+        loading: true,
       },
     ]);
 
@@ -31,31 +47,38 @@ export default function ChatWindow() {
         question,
       });
 
-      setMessages((prev) => [
-        ...prev,
-        {
+      setMessages((prev) => {
+        const updated = [...prev];
+
+        updated[updated.length - 1] = {
           role: "assistant",
           message: response.data.answer,
           sources: response.data.context,
-        },
-      ]);
+        };
+
+        return updated;
+      });
     } catch (error) {
       console.error(error);
 
-      setMessages((prev) => [
-        ...prev,
-        {
+      setMessages((prev) => {
+        const updated = [...prev];
+
+        updated[updated.length - 1] = {
           role: "assistant",
-          message:
-            "Sorry, something went wrong while generating the response.",
-        },
-      ]);
+          message: "Sorry, something went wrong while generating the response.",
+        };
+
+        return updated;
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <section className="flex flex-1 flex-col bg-slate-50">
-      <div className="flex-1 overflow-y-auto p-8">
+      <div className="flex-1 overflow-y-auto scroll-smooth p-8">
         <div className="mx-auto max-w-4xl space-y-5">
           {messages.map((msg, index) => (
             <MessageBubble
@@ -65,10 +88,15 @@ export default function ChatWindow() {
               sources={msg.sources}
             />
           ))}
+
+          <div ref={messagesEndRef} />
         </div>
       </div>
 
-      <ChatInput onSend={sendMessage} />
+      <ChatInput
+        onSend={sendMessage}
+        disabled={loading}
+      />
     </section>
   );
 }

@@ -23,8 +23,16 @@ export default function MessageBubble({
         }`}
       >
         <p className="whitespace-pre-wrap">
-          {message}
+            {message}
         </p>
+
+        {message === "Thinking..." && (
+            <div className="mt-3 flex gap-1">
+                <div className="h-2 w-2 animate-bounce rounded-full bg-slate-400"></div>
+                <div className="h-2 w-2 animate-bounce rounded-full bg-slate-400 [animation-delay:150ms]"></div>
+                <div className="h-2 w-2 animate-bounce rounded-full bg-slate-400 [animation-delay:300ms]"></div>
+            </div>
+        )}
 
         {!isUser && (
           <Sources
