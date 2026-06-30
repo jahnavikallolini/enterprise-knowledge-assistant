@@ -1,22 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 import ChatInput from "./ChatInput";
 import MessageBubble from "./MessageBubble";
 
-import api from "@/services/api";
-import { Message } from "@/types";
+import useChat from "@/hooks/useChat";
 
 export default function ChatWindow() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: "assistant",
-      message: "Hello! Upload a PDF and ask me anything about it.",
-    },
-  ]);
-
-  const [loading, setLoading] = useState(false);
+  const { messages, loading, sendMessage } = useChat();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -25,56 +17,6 @@ export default function ChatWindow() {
       behavior: "smooth",
     });
   }, [messages]);
-
-  const sendMessage = async (question: string) => {
-    setLoading(true);
-
-    setMessages((prev) => [
-      ...prev,
-      {
-        role: "user",
-        message: question,
-      },
-      {
-        role: "assistant",
-        message: "Thinking...",
-        loading: true,
-      },
-    ]);
-
-    try {
-      const response = await api.post("/chat", {
-        question,
-      });
-
-      setMessages((prev) => {
-        const updated = [...prev];
-
-        updated[updated.length - 1] = {
-          role: "assistant",
-          message: response.data.answer,
-          sources: response.data.context,
-        };
-
-        return updated;
-      });
-    } catch (error) {
-      console.error(error);
-
-      setMessages((prev) => {
-        const updated = [...prev];
-
-        updated[updated.length - 1] = {
-          role: "assistant",
-          message: "Sorry, something went wrong while generating the response.",
-        };
-
-        return updated;
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <section className="flex flex-1 flex-col bg-slate-50">

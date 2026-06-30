@@ -1,4 +1,5 @@
 import Sources from "./Sources";
+import MarkdownRenderer from "./MarkdownRenderer";
 
 interface MessageBubbleProps {
   role: "user" | "assistant";
@@ -16,22 +17,24 @@ export default function MessageBubble({
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
       <div
-        className={`max-w-[80%] rounded-2xl px-5 py-3 shadow-sm ${
+        className={`max-w-[80%] rounded-2xl px-5 py-4 shadow-sm ${
           isUser
             ? "bg-blue-600 text-white"
             : "border border-slate-200 bg-white text-slate-800"
         }`}
       >
-        <p className="whitespace-pre-wrap">
-            {message}
-        </p>
+        {isUser ? (
+          <p className="whitespace-pre-wrap">{message}</p>
+        ) : (
+          <MarkdownRenderer content={message} />
+        )}
 
         {message === "Thinking..." && (
-            <div className="mt-3 flex gap-1">
-                <div className="h-2 w-2 animate-bounce rounded-full bg-slate-400"></div>
-                <div className="h-2 w-2 animate-bounce rounded-full bg-slate-400 [animation-delay:150ms]"></div>
-                <div className="h-2 w-2 animate-bounce rounded-full bg-slate-400 [animation-delay:300ms]"></div>
-            </div>
+          <div className="mt-3 flex gap-1">
+            <div className="h-2 w-2 animate-bounce rounded-full bg-slate-400"></div>
+            <div className="h-2 w-2 animate-bounce rounded-full bg-slate-400 [animation-delay:150ms]"></div>
+            <div className="h-2 w-2 animate-bounce rounded-full bg-slate-400 [animation-delay:300ms]"></div>
+          </div>
         )}
 
         {!isUser && (
