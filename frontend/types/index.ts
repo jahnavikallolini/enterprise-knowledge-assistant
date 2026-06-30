@@ -14,4 +14,6 @@ export interface ChatResponse {
 export interface Message {
   role: "user" | "assistant";
   message: string;
+  sources?: string[];
+  loading?: boolean;
 }

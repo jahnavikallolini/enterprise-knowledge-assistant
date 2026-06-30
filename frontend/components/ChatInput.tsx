@@ -25,9 +25,7 @@ export default function ChatInput({
 
   return (
     <div className="border-t bg-white p-6">
-
       <div className="flex gap-3">
-
         <Input
           placeholder="Ask anything about your documents..."
           value={message}
@@ -42,9 +40,7 @@ export default function ChatInput({
         <Button onClick={handleSend}>
           <Send size={18} />
         </Button>
-
       </div>
-
     </div>
   );
 }

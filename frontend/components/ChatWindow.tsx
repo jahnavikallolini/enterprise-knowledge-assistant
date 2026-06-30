@@ -36,6 +36,7 @@ export default function ChatWindow() {
         {
           role: "assistant",
           message: response.data.answer,
+          sources: response.data.context,
         },
       ]);
     } catch (error) {
@@ -61,6 +62,7 @@ export default function ChatWindow() {
               key={index}
               role={msg.role}
               message={msg.message}
+              sources={msg.sources}
             />
           ))}
         </div>
