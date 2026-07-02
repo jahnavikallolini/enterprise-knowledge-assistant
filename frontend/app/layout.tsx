@@ -28,12 +28,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full`}
     >
-      <body className="min-h-full">
-        <ToastProvider>
-          {children}
-        </ToastProvider>
+      <body className="h-full overflow-hidden bg-slate-100 antialiased">
+        <ToastProvider>{children}</ToastProvider>
       </body>
     </html>
   );

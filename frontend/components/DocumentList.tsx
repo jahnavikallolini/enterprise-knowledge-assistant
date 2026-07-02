@@ -124,7 +124,7 @@ export default function DocumentList({
 
   return (
     <>
-      <div className="flex-1">
+      <div className="flex h-full flex-col">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-base font-semibold text-slate-900">
             Documents

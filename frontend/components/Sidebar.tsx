@@ -14,7 +14,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="flex w-80 flex-col border-r border-slate-200 bg-white">
+    <aside className="flex h-full w-80 flex-col border-r border-slate-200 bg-white">
       <div className="border-b border-slate-200 px-6 py-5">
         <div className="flex items-center gap-3">
           <div className="rounded-lg bg-slate-100 p-2">
@@ -33,14 +33,16 @@ export default function Sidebar() {
         </div>
       </div>
 
-      <div className="space-y-6 p-6">
+      <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-hidden p-6">
         <UploadSection
           onUploadSuccess={refreshDocuments}
         />
 
-        <DocumentList
-          refreshKey={refreshKey}
-        />
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <DocumentList
+            refreshKey={refreshKey}
+          />
+        </div>
       </div>
     </aside>
   );

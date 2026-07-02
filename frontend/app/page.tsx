@@ -4,18 +4,14 @@ import ChatWindow from "@/components/ChatWindow";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-slate-100">
-
+    <main className="flex h-screen flex-col bg-slate-100 overflow-hidden">
       <Header />
 
-      <div className="flex h-[calc(100vh-80px)]">
-
+      <div className="flex flex-1 overflow-hidden">
         <Sidebar />
 
         <ChatWindow />
-
       </div>
-
     </main>
   );
 }
