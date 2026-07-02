@@ -1,11 +1,13 @@
 "use client";
 
-import { useRef } from "react";
-import { Upload } from "lucide-react";
+import { useRef, useState } from "react";
+import { Loader2, Upload } from "lucide-react";
 
 import Card from "./ui/Card";
 import Button from "./ui/Button";
+
 import api from "@/services/api";
+import { useToast } from "./ui/ToastProvider";
 
 interface UploadSectionProps {
   onUploadSuccess: () => void;
@@ -16,8 +18,14 @@ export default function UploadSection({
 }: UploadSectionProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [uploading, setUploading] = useState(false);
+
+  const { showToast } = useToast();
+
   const handleButtonClick = () => {
-    fileInputRef.current?.click();
+    if (!uploading) {
+      fileInputRef.current?.click();
+    }
   };
 
   const handleFileChange = async (
@@ -28,27 +36,45 @@ export default function UploadSection({
     if (!file) return;
 
     try {
+      setUploading(true);
+
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await api.post("/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await api.post(
+        "/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type":
+              "multipart/form-data",
+          },
+        }
+      );
 
-      console.log(response.data);
-
-      // Refresh the document list
       onUploadSuccess();
 
-      // Clear the file input so the same file can be uploaded again if needed
+      showToast({
+        type: "success",
+        message: `"${file.name}" uploaded successfully.`,
+      });
+
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
-    } catch (error) {
-      console.error("Upload failed:", error);
-      alert("Failed to upload document.");
+    } catch (error: any) {
+      console.error(error);
+
+      const message =
+        error?.response?.data?.detail ??
+        "Unable to upload document.";
+
+      showToast({
+        type: "error",
+        message,
+      });
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -56,7 +82,11 @@ export default function UploadSection({
     <Card className="p-6">
       <div className="flex flex-col items-center text-center">
         <div className="mb-4 rounded-full bg-blue-100 p-4">
-          <Upload className="h-8 w-8 text-blue-600" />
+          {uploading ? (
+            <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+          ) : (
+            <Upload className="h-8 w-8 text-blue-600" />
+          )}
         </div>
 
         <h2 className="text-lg font-semibold text-slate-800">
@@ -70,8 +100,11 @@ export default function UploadSection({
         <Button
           className="w-full"
           onClick={handleButtonClick}
+          disabled={uploading}
         >
-          Choose PDF
+          {uploading
+            ? "Uploading..."
+            : "Choose PDF"}
         </Button>
 
         <input

@@ -14,17 +14,22 @@ client = genai.Client(
 
 def generate_answer(
     question: str,
-    context_chunks: list[str]
+    context_chunks: list[dict]
 ):
 
     context = "\n\n".join(
-        context_chunks
+        chunk["text"]
+        for chunk in context_chunks
     )
 
     prompt = f"""
 You are an enterprise knowledge assistant.
 
-Use ONLY the provided context.
+Answer the user's question using ONLY the provided context.
+
+If the answer is not present in the context, clearly say that the information could not be found in the uploaded documents.
+
+Write your answer in clear, well-formatted Markdown.
 
 Context:
 {context}

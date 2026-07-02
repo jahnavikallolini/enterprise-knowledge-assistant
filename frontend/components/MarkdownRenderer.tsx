@@ -14,13 +14,13 @@ export default function MarkdownRenderer({
   content,
 }: MarkdownRendererProps) {
   return (
-    <div className="markdown max-w-none">
+    <article className="markdown max-w-none text-[15px] leading-7 text-slate-800">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight]}
       >
         {content}
       </ReactMarkdown>
-    </div>
+    </article>
   );
 }

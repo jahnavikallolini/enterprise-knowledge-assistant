@@ -1,15 +1,21 @@
-from pydantic import BaseModel
 from typing import List
+
+from pydantic import BaseModel
 
 
 class ChatRequest(BaseModel):
     question: str
 
 
+class Source(BaseModel):
+    source: str
+    text: str
+
+
 class ChatResponse(BaseModel):
     question: str
     answer: str
-    context: List[str]
+    context: List[Source]
 
 
 class UploadResponse(BaseModel):

@@ -15,7 +15,31 @@ def retrieve_context(
 
     results = collection.query(
         query_embeddings=[query_embedding],
-        n_results=k
+        n_results=k,
+        include=[
+            "documents",
+            "metadatas"
+        ]
     )
 
-    return results["documents"][0]
+    retrieved = []
+
+    documents = results["documents"][0]
+    metadatas = results["metadatas"][0]
+
+    for document, metadata in zip(
+        documents,
+        metadatas
+    ):
+
+        retrieved.append(
+            {
+                "text": document,
+                "source": metadata.get(
+                    "source",
+                    "Unknown Document"
+                )
+            }
+        )
+
+    return retrieved

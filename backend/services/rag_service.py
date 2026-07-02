@@ -1,3 +1,5 @@
+import os
+
 from rag.document_loader import load_pdf
 from rag.chunker import chunk_text
 from rag.embedding_service import generate_embeddings
@@ -8,20 +10,41 @@ from rag.llm_service import generate_answer
 
 def process_document(file_path: str):
     """
-    Process a PDF and store its embeddings in the vector database.
+    Process a PDF and store its embeddings.
     """
 
-    # Step 1: Extract text
+    filename = os.path.basename(file_path)
+
+    # Extract text
     text = load_pdf(file_path)
 
-    # Step 2: Split into chunks
+    if not text.strip():
+        raise ValueError(
+            "This PDF appears to contain no searchable text. Please upload a searchable PDF."
+        )
+
+    # Split into chunks
     chunks = chunk_text(text)
 
-    # Step 3: Generate embeddings
+    if len(chunks) == 0:
+        raise ValueError(
+            "Unable to extract meaningful text from this PDF."
+        )
+
+    # Generate embeddings
     embeddings = generate_embeddings(chunks)
 
-    # Step 4: Store in ChromaDB
-    store_documents(chunks, embeddings)
+    if len(embeddings) == 0:
+        raise ValueError(
+            "Unable to generate embeddings for this document."
+        )
+
+    # Store in ChromaDB
+    store_documents(
+        filename=filename,
+        chunks=chunks,
+        embeddings=embeddings
+    )
 
     return {
         "status": "success",
@@ -31,14 +54,8 @@ def process_document(file_path: str):
 
 
 def ask_question(question: str):
-    """
-    Retrieve relevant context and generate an answer.
-    """
-
-    # Step 1: Retrieve relevant chunks
     context = retrieve_context(question)
 
-    # Step 2: Generate answer
     answer = generate_answer(
         question=question,
         context_chunks=context

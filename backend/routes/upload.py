@@ -34,13 +34,37 @@ def upload_document(file: UploadFile = File(...)):
         file.filename
     )
 
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    try:
 
-    response = process_document(file_path)
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
 
-    return UploadResponse(
-        status=response["status"],
-        message=response["message"],
-        total_chunks=response["total_chunks"]
-    )
+        response = process_document(file_path)
+
+        return UploadResponse(
+            status=response["status"],
+            message=response["message"],
+            total_chunks=response["total_chunks"]
+        )
+
+    except ValueError as e:
+
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+        raise HTTPException(
+            status_code=400,
+            detail=str(e)
+        )
+
+    except Exception as e:
+
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+        print(e)
+
+        raise HTTPException(
+            status_code=500,
+            detail="An unexpected error occurred while processing the document."
+        )

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { FolderOpen } from "lucide-react";
 
 import UploadSection from "./UploadSection";
 import DocumentList from "./DocumentList";
@@ -13,16 +14,34 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-80 border-r border-slate-200 bg-white p-6 flex flex-col">
+    <aside className="flex w-80 flex-col border-r border-slate-200 bg-white">
+      <div className="border-b border-slate-200 px-6 py-5">
+        <div className="flex items-center gap-3">
+          <div className="rounded-lg bg-slate-100 p-2">
+            <FolderOpen className="h-5 w-5 text-slate-700" />
+          </div>
 
-      <UploadSection
-        onUploadSuccess={refreshDocuments}
-      />
+          <div>
+            <h2 className="text-base font-semibold text-slate-900">
+              Workspace
+            </h2>
 
-      <DocumentList
-        refreshKey={refreshKey}
-      />
+            <p className="text-sm text-slate-500">
+              Manage your documents
+            </p>
+          </div>
+        </div>
+      </div>
 
+      <div className="space-y-6 p-6">
+        <UploadSection
+          onUploadSuccess={refreshDocuments}
+        />
+
+        <DocumentList
+          refreshKey={refreshKey}
+        />
+      </div>
     </aside>
   );
 }

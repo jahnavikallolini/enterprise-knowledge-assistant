@@ -1,4 +1,5 @@
 import chromadb
+import uuid
 
 client = chromadb.PersistentClient(
     path="database/chroma_db"
@@ -10,16 +11,37 @@ collection = client.get_or_create_collection(
 
 
 def store_documents(
-    chunks,
-    embeddings
+    filename: str,
+    chunks: list[str],
+    embeddings: list[list[float]]
 ):
+    ids = [
+        str(uuid.uuid4())
+        for _ in chunks
+    ]
 
-    ids = [str(i) for i in range(len(chunks))]
+    metadatas = [
+        {
+            "source": filename
+        }
+        for _ in chunks
+    ]
 
     collection.add(
         ids=ids,
         documents=chunks,
-        embeddings=embeddings
+        embeddings=embeddings,
+        metadatas=metadatas
+    )
+
+
+def delete_document(
+    filename: str
+):
+    collection.delete(
+        where={
+            "source": filename
+        }
     )
 
 
