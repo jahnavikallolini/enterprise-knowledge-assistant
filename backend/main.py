@@ -18,8 +18,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "http://127.0.0.1:3000",
-
-        "https://enterprise-knowledge-assistant-sigma.vercel.app/",
+        "https://enterprise-knowledge-assistant-h7v06ttuf-jkall.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
