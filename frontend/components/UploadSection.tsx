@@ -42,7 +42,7 @@ export default function UploadSection({
       formData.append("file", file);
 
       await api.post(
-        "/upload",
+        "/upload/",
         formData,
         {
           headers: {
